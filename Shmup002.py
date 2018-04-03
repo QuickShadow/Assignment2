@@ -383,6 +383,8 @@ autodirection = 1
 # Main Game Loop - Start of loop
 #-------------------------------------------------------------------------------------------------------------------------
 while True:
+    # Force Pygame to process the loop without needing to access events
+    pygame.event.pump()
     # Set Framerate
     clock.tick(60)
 
@@ -432,7 +434,9 @@ while True:
         maxHealth = 75 * (1.6**(armour+1))
         health = maxHealth
         while health > 0:
-            #Set Framerate
+            # Force Pygame to process the loop without needing to access events
+            pygame.event.pump()
+            # Set Framerate
             clock.tick(60)
 
             pressedKeys = pygame.key.get_pressed()
@@ -565,6 +569,9 @@ while True:
                 pygame.display.update()
                 
                 while True:
+                    # Force Pygame to process the loop without needing to access events
+                    pygame.event.pump()
+                    
                     pressedKeys = pygame.key.get_pressed()
 
                     if pressedKeys[K_w]:
@@ -644,12 +651,8 @@ while True:
         menu = False
 
         while True:
-            # Exit game process
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.mixer.quit()
-                    pygame.display.quit()
-                    sys.exit()
+            # Force Pygame to process the loop without needing to access events
+            pygame.event.pump()
 
             pressedKeys = pygame.key.get_pressed()
             if pressedKeys[K_ESCAPE]:
@@ -701,6 +704,11 @@ while True:
                 engine = 2
             if pressedKeys[K_l]:
                 engine = 3
+
+#-------------------------------------------------------------------------------------------------------------------------
+# Upgrade Mode - On exit to menu
+#-------------------------------------------------------------------------------------------------------------------------
+        menuButton = 0
 
 #-------------------------------------------------------------------------------------------------------------------------
 # Upgrade Mode - End of loop
