@@ -14,6 +14,8 @@ pygame.init()
 
 # Load fonts
 fontOne = pygame.font.Font("2015 Cruiser Bold Italic.otf", 50)
+fontTwo = pygame.font.Font("2015 Cruiser Bold Italic.otf", 20)
+fontHelp = pygame.font.Font("2015 Cruiser Bold Italic.otf", 30)
 
 # Set caption at top of screen (can't be seen in full screen mode)
 pygame.display.set_caption("Shmup")
@@ -38,28 +40,38 @@ backgroundScroll = 0
 # Define Images, Variables, and Class for Spaceship
 #-------------------------------------------------------------------------------------------------------------------------
 spaceship_image = pygame.image.load("Spaceship.png")
-
-armour1_image = pygame.image.load("Armour1.png")
-armour2_image = pygame.image.load("Armour2.png")
-armour3_image = pygame.image.load("Armour3.png")
-
-engine1_image = pygame.image.load("Engine1.png")
-engine2_image = pygame.image.load("Engine2.png")
-engine3_image = pygame.image.load("Engine3.png")
-
-noseGun1_image = pygame.image.load("NoseGun1.png")
-noseGun2_image = pygame.image.load("NoseGun2.png")
-noseGun3_image = pygame.image.load("NoseGun3.png")
-
-rWingGun1_image = pygame.image.load("RWingGun1.png")
-rWingGun2_image = pygame.image.load("RWingGun2.png")
-rWingGun3_image = pygame.image.load("RWingGun3.png")
-
-lWingGun1_image = pygame.image.load("LWingGun1.png")
-lWingGun2_image = pygame.image.load("LWingGun2.png")
-lWingGun3_image = pygame.image.load("LWingGun3.png")
-
 spaceshipX, spaceshipY = spaceship_image.get_size()
+
+armour_image = ["",
+pygame.image.load("Armour1.png"),
+pygame.image.load("Armour2.png"),
+pygame.image.load("Armour3.png")
+]
+
+engine_image = ["",
+pygame.image.load("Engine1.png"),
+pygame.image.load("Engine2.png"),
+pygame.image.load("Engine3.png")
+]
+
+noseGun_image = ["",
+pygame.image.load("NoseGun1.png"),
+pygame.image.load("NoseGun2.png"),
+pygame.image.load("NoseGun3.png")
+]
+
+rWingGun_image = ["",
+pygame.image.load("RWingGun1.png"),
+pygame.image.load("RWingGun2.png"),
+pygame.image.load("RWingGun3.png")
+]
+
+lWingGun_image = ["",
+pygame.image.load("LWingGun1.png"),
+pygame.image.load("LWingGun2.png"),
+pygame.image.load("LWingGun3.png")
+]
+
 wingGunOffsetX = 56
 wingGunOffsetY = 85
 gunBarrelOffset = 5
@@ -74,65 +86,52 @@ noseGun = 1
 rWingGun = 0
 lWingGun = 0
 
+#     1100    approx for clearing L1
+#     9000    approx for clearing L5
+#   30k        approx for clearing L10
+#   75k        approx for clearing L15
+# 170k        approx for clearing L20
+# 350k        approx for clearing L25
+armourCost =[100, 300, 500]
+engineCost =[100, 300, 500]
+nGunCost =[0, 300, 500]
+rGunCost =[30000, 300, 500]
+lGunCost =[30000, 300, 500]
+
 class Spaceship:
     def __init__(self):
         self.x = (screenX-spaceshipX)/2
         self.y = (screenY + gameY) /2 -(spaceshipY*1.5)
 
     def draw(self):
-        if noseGun == 1:
-            screen.blit(noseGun1_image, (self.x, self.y))
-        elif noseGun == 2:
-            screen.blit(noseGun2_image, (self.x, self.y))
-        elif noseGun == 3:
-            screen.blit(noseGun3_image, (self.x, self.y))
-
-        if rWingGun ==1:
-            screen.blit(rWingGun1_image, (self.x, self.y))
-        elif rWingGun == 2:
-            screen.blit(rWingGun2_image, (self.x, self.y))
-        elif rWingGun == 3:
-            screen.blit(rWingGun3_image, (self.x, self.y))
-
-        if lWingGun == 1:
-            screen.blit(lWingGun1_image, (self.x, self.y))
-        elif lWingGun == 2:
-            screen.blit(lWingGun2_image, (self.x, self.y))
-        elif lWingGun == 3:
-            screen.blit(lWingGun3_image, (self.x, self.y))
-
+        if noseGun > 0:
+            screen.blit(noseGun_image[noseGun], (self.x, self.y))
+        if rWingGun > 0:
+            screen.blit(rWingGun_image[rWingGun], (self.x, self.y))
+        if lWingGun > 0:
+            screen.blit(lWingGun_image[lWingGun], (self.x, self.y))
         screen.blit(spaceship_image, (self.x, self.y))
-
-        if engine == 1:
-            screen.blit(engine1_image, (self.x, self.y))
-        elif engine == 2:
-            screen.blit(engine2_image, (self.x, self.y))
-        elif engine == 3:
-            screen.blit(engine3_image, (self.x, self.y))
-
-        if armour == 1:
-            screen.blit(armour1_image, (self.x, self.y))
-        elif armour == 2:
-            screen.blit(armour2_image, (self.x, self.y))
-        elif armour == 3:
-            screen.blit(armour3_image, (self.x, self.y))
+        if engine > 0:
+            screen.blit(engine_image[engine], (self.x, self.y))
+        if armour > 0:
+            screen.blit(armour_image[armour], (self.x, self.y))
 
     def move(self):
         if pressedKeys[K_w] and self.y > (screenY - gameY)/2 + ((engine+1)**1.4*4*1.3):
             self.y -= (engine+1)**1.4*4*0.7
         elif pressedKeys[K_w]:
             self.y = (screenY - gameY)/2
-            
+
         if pressedKeys[K_s] and self.y < (screenY + gameY)/2 -spaceshipY-((engine+1)**1.4*4*1.3):
             self.y += (engine+1)**1.4*4*1.3
         elif pressedKeys[K_s]:
             self.y = (screenY + gameY)/2 - spaceshipY
-            
+
         if pressedKeys[K_d] and self.x < (screenX + gameX)/2 -spaceshipX-((engine+1)**1.4*4):
             self.x += (engine+1)**1.4*4
         elif pressedKeys[K_d]:
             self.x = (screenX + gameX)/2 -spaceshipX
-            
+
         if pressedKeys[K_a] and self.x > (screenX - gameX)/2 + ((engine+1)**1.4*4):
             self.x -= (engine+1)**1.4*4
         elif pressedKeys[K_a]:
@@ -189,7 +188,7 @@ class Missile:
         pygame.draw.line(screen, (255,0,0), (self.x,self.y), (self.x, self.y-5), 1)
 
     def move(self):
-        self.y -= 10
+        self.y -= 20
 
 #-------------------------------------------------------------------------------------------------------------------------
 # Define Images List and Class for Explosions
@@ -206,7 +205,7 @@ explosion = [
     pygame.image.load("Explosion9.png"),
     pygame.image.load("Explosion10.png"),
     pygame.image.load("Explosion11.png"),
-    pygame.image.load("Explosion12.png"),
+    pygame.image.load("Explosion12.png")
     ]
 
 explosions = []
@@ -222,7 +221,6 @@ class Explosion:
         explode = pygame.transform.rotate(explosion[self.animation], self.rot)
         explodeX, explodeY = explosion[0].get_size()
         screen.blit(explode, (self.x - (explodeX /2), self.y - (explodeY /2)))
-        self.animation += 1
 
 #-------------------------------------------------------------------------------------------------------------------------
 #Define Images, Variables, List, and Class for Enemies
@@ -295,7 +293,7 @@ class Enemies:
         if self.type == 1:
             if (self.x < (screenX-gameX)/2+(enemy1X /2) and self.destinationX < 0) or (self.x > (screenX + gameX) /2 -(enemy1X /2) and self.destinationX >0):
                 self.destinationX *= -1
-                
+
         if self.type == 2:
             if self.mode == 0:
                 if (self.x < (screenX-gameX)/2 + (enemy2aX /2) and self.destinationX <0) or (self.x > (screenX + gameX) /2 - (enemy2aX /2) and self.destinationX >0):
@@ -303,20 +301,17 @@ class Enemies:
             if self.mode == 1:
                 if (self.x < (screenX-gameX)/2 + (enemy2bX /2) and self.destinationX <0) or (self.x > (screenX + gameX) /2 - (enemy2bX /2) and self.destinationX >0):
                     self.destinationX *= -1
-                    
+
     def draw(self):
         # renders the image to the screen
         if self.type == 1:
             screen.blit(enemy1[self.animation], (self.x-(enemy1X /2), self.y-(enemy1Y /2)))
-            self.animation = (self.animation + 1) % len(enemy1)
             
         if self.type == 2:
             if self.mode == 0:
                 screen.blit(enemy2a[self.animation], (self.x-(enemy2aX /2), self.y-(enemy2aY /2)))
-                self.animation = (self.animation + 1) % len(enemy2a)
             if self.mode == 1:
                 screen.blit(enemy2b[self.animation], (self.x-(enemy2bX /2), self.y-(enemy2bY /2)))
-                self.animation = (self.animation + 1) % len(enemy2b)
 
     def hit_by(self, missile):
         if self.type == 1:
@@ -356,7 +351,6 @@ class Bomb:
     def draw(self):
         pygame.draw.line(screen, (0,255,0), (self.x,self.y), (self.x, self.y+5), 1)
         screen.blit(bomb[self.animation], (self.x-(bombX /2), self.y-(bombY /2)))
-        self.animation = (self.animation + 1) % len(bomb)
 
     def move(self):
         self.y += 10
@@ -364,6 +358,10 @@ class Bomb:
 #-------------------------------------------------------------------------------------------------------------------------
 # Set other game variables
 #-------------------------------------------------------------------------------------------------------------------------
+Button1_image = pygame.image.load("Button.png")
+Button2_image = pygame.image.load("ButtonActive.png")
+buttonX, buttonY = Button1_image.get_size()
+
 clock = pygame.time.Clock()
 
 score = 0
@@ -372,8 +370,13 @@ level = 1
 maxLevel = 30 # Target level to beat in order to clear the game
 levelTimer = 0
 levelDelay = 60 # Counts in seconds
+pauseTime = 0
 menu = False
 menuButton = 0
+menu2 = False
+helpMessage = True
+toggle = True
+select = True
 
 autopilot = False
 autodirection = 1
@@ -410,8 +413,59 @@ while True:
         menuButton = 4  # Upgrades
 
     screen.blit (fontOne.render("Score: " + str(totalScore), True, (200,0,50)), ( (screenX-gameX)/2+10, (screenY-gameY)/2+10 ) )
+
+    #   Draws the Menu Buttons
+    if menuButton == 1:
+        screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+100)) # Start Game Button
+        screen.blit (fontTwo.render("Start Game", True, (10,10,10)), ((screenX-fontTwo.size("Start Game")[0])/2, (screenY-fontTwo.size("Start Game")[1])/2+100-2)) # font.size returns [width,height] of the (text)
+    else:
+        screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+100))
+        screen.blit (fontTwo.render("Start Game", True, (10,10,10)), ((screenX-fontTwo.size("Start Game")[0])/2, (screenY-fontTwo.size("Start Game")[1])/2+100-4))
+
+    if menuButton == 2:
+        screen.blit(Button2_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+225)) # Credits
+        screen.blit (fontTwo.render("Credits", True, (10,10,10)), ((screenX-fontTwo.size("Credits")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Credits")[1])/2+225-2))
+    else:
+        screen.blit(Button1_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+225))
+        screen.blit (fontTwo.render("Credits", True, (10,10,10)), ((screenX-fontTwo.size("Credits")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Credits")[1])/2+225-4))
+
+    if menuButton == 3:
+        screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+350)) # Quit Game
+        screen.blit (fontTwo.render("Quit Game", True, (10,10,10)), ((screenX-fontTwo.size("Quit Game")[0])/2, (screenY-fontTwo.size("Quit Game")[1])/2+350-2))
+    else:
+        screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+350))
+        screen.blit (fontTwo.render("Quit Game", True, (10,10,10)), ((screenX-fontTwo.size("Quit Game")[0])/2, (screenY-fontTwo.size("Quit Game")[1])/2+350-4))
+
+    if menuButton == 4:
+        screen.blit(Button2_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+225)) # Upgrades Button
+        screen.blit (fontTwo.render("Upgrade", True, (10,10,10)), ((screenX-fontTwo.size("Upgrade")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Upgrade")[1])/2+225-2))
+    else:
+        screen.blit(Button1_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+225))
+        screen.blit (fontTwo.render("Upgrade", True, (10,10,10)), ((screenX-fontTwo.size("Upgrade")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Upgrade")[1])/2+225-4))
+
+    # Sets the Help Message on or off and draws to the screen if needed
+    if pressedKeys[K_F1]:
+        if toggle:
+            helpMessage =not helpMessage
+            toggle = False
+    else:
+        toggle = True
+
+    if helpMessage == True:
+         screen.blit (fontHelp.render("Press F1 to toggle instructions", True, (255,255,255)), (0,0) )
+         screen.blit (fontHelp.render("W", True, (255,255,255)), (0,50) )
+         screen.blit (fontHelp.render("Move Up", True, (255,255,255)), (200,50) )
+         screen.blit (fontHelp.render("S", True, (255,255,255)), (0,80) )
+         screen.blit (fontHelp.render("Move Down", True, (255,255,255)), (200,80) )
+         screen.blit (fontHelp.render("A", True, (255,255,255)), (0,110) )
+         screen.blit (fontHelp.render("Move Left", True, (255,255,255)), (200,110) )
+         screen.blit (fontHelp.render("D", True, (255,255,255)), (0,140) )
+         screen.blit (fontHelp.render("Move Right", True, (255,255,255)), (200,140) )
+         screen.blit (fontHelp.render("Enter", True, (255,255,255)), (0,190) )
+         screen.blit (fontHelp.render("Select", True, (255,255,255)), (200,190) )
+
     pygame.display.update()
-    print(menuButton)
+
     # Exit game process
     if pressedKeys[K_RETURN] and menuButton ==3:
         pygame.mixer.quit()
@@ -454,7 +508,7 @@ while True:
             screen.blit(gameBackground_image, ((screenX-gameX)/2, (screenY-gameY)/2+backgroundScroll-backgroundY))
 
             # Spawns new enemies if the timer has elapsed
-            if time.time() - lastTimeEnemySpawned > spawnDelay-(level*spawnDelay / (maxLevel +10)): # Spawn delay goes goes to 0 at 10 levels past game completion.
+            if time.time() - lastTimeEnemySpawned > spawnDelay-(level/(maxLevel +10)*spawnDelay): # Spawn delay goes to 0 at 10 levels past game completion.
                 enemies.append(Enemies(level))
                 lastTimeEnemySpawned = time.time()
 
@@ -481,6 +535,7 @@ while True:
                 enemies[i].move()
                 enemies[i].bounce()
                 enemies[i].draw()
+                enemies[i].animation = (enemies[i].animation + 1) % 4
                 if enemies[i].type == 2 and enemies[i].mode == 1:
                     enemies[i].fire()
                 # Deletes enemies if they reach the bottom of the screen
@@ -500,6 +555,7 @@ while True:
             while e < len(bombs):
                 bombs[e].move()
                 bombs[e].draw()
+                bombs[e].animation = (bombs[e].animation + 1) % len(bomb)
                 # Check bombs are still in play or deletes them
                 if bombs[e].y > (screenY + gameY)/2 +10:
                     del bombs[e]
@@ -511,7 +567,7 @@ while True:
                     health -= level *5 +10
                     # Sound effect for losing health
                 e += 1
-                
+
             # Nested to loop to check collisions between missiles and enemies
             i = 0
             while i < len(enemies):
@@ -526,7 +582,7 @@ while True:
                         enemies[i].health-=bulletDamage
                         if enemies[i].health <= 0:
                             del enemies[i]
-                            score += level *10 +90
+                            score += level **2 +50
                             i -= 1
                             # Sound effect for enemies dying
                             #enemyKill.play()
@@ -538,8 +594,8 @@ while True:
             n=0
             while n < len(explosions):
                 explosions[n].draw()
+                explosions[n].animation += 1
                 if explosions[n].animation > len(explosion)-1:
-                    #print( explosions[n].animation + " / " + len(explosion))
                     del explosions[n]
                     n -= 1
                 n += 1
@@ -551,49 +607,159 @@ while True:
             pygame.draw.rect(screen, (backgroundColour), ( (screenX-gameX)/2, (screenY+gameY)/2, gameX, (screenY-gameY)/2 ), 0)
 
             # Draws Health Bar and stats
-            pygame.draw.rect (screen, (200,0,50), ( (screenX-gameX)/2+10, (screenY-gameY)/2+10, health/maxHealth*300, 50 ) )
-            screen.blit (fontOne.render("Level: " + str(level), True, (200,0,50)), ( (screenX)/2, (screenY-gameY)/2+10 ) )
-            screen.blit (fontOne.render("Timer: " + str(round(levelDelay-time.time() + levelTimer,1)), True, (200,0,50)), ( (screenX)/2-30, (screenY-gameY)/2+75 ) )
+            pygame.draw.rect (screen, (200,0,50), ( (screenX-gameX)/2+10, (screenY-gameY)/2+10, health/maxHealth*(armour*75+200), 50 ) )
+            screen.blit (fontOne.render("Level: " + str(level), True, (200,0,50)), ( (screenX+gameX-fontOne.size("Timer: 00.0")[0]-fontOne.size("Level: 00")[0])/2, (screenY-gameY)/2+10 ) )
+            screen.blit (fontOne.render("Timer: " + str(round(levelDelay-time.time() + levelTimer,1)), True, (200,0,50)), ( (screenX+gameX)/2-fontOne.size("Timer: 00.0")[0], (screenY-gameY)/2+75 ) )
             screen.blit (fontOne.render("Score: " + str(score), True, (200,0,50)), ( (screenX-gameX)/2+10, (screenY-gameY)/2+75 ) )
+
+            # Sets the Help Message on or off and draws to the screen if needed
+            if pressedKeys[K_F1]:
+                if toggle:
+                    helpMessage =not helpMessage
+                    toggle = False
+            else:
+                toggle = True
+
+            if helpMessage == True:
+                 screen.blit (fontHelp.render("Press F1 to toggle instructions", True, (255,255,255)), (0,0) )
+                 screen.blit (fontHelp.render("W", True, (255,255,255)), (0,50) )
+                 screen.blit (fontHelp.render("Move Up", True, (255,255,255)), (200,50) )
+                 screen.blit (fontHelp.render("S", True, (255,255,255)), (0,80) )
+                 screen.blit (fontHelp.render("Move Down", True, (255,255,255)), (200,80) )
+                 screen.blit (fontHelp.render("A", True, (255,255,255)), (0,110) )
+                 screen.blit (fontHelp.render("Move Left", True, (255,255,255)), (200,110) )
+                 screen.blit (fontHelp.render("D", True, (255,255,255)), (0,140) )
+                 screen.blit (fontHelp.render("Move Right", True, (255,255,255)), (200,140) )
+                 screen.blit (fontHelp.render("Enter", True, (255,255,255)), (0,190) )
+                 screen.blit (fontHelp.render("Select", True, (255,255,255)), (200,190) )
+
             pygame.display.update()
+
+#-------------------------------------------------------------------------------------------------------------------------
+# Game Mode - Win Screen
+#-------------------------------------------------------------------------------------------------------------------------
+
+            if level > maxLevel:
+                pass
 
 #-------------------------------------------------------------------------------------------------------------------------
 # Game Mode - Pause Menu
 #-------------------------------------------------------------------------------------------------------------------------
             if pressedKeys [K_ESCAPE]:
                 menuButton = 0
-                # Darkens the game while paused
-                pauseFade = pygame.Surface((gameX,gameY), pygame.SRCALPHA, 32)
-                pauseFade.fill((0, 0, 0, 100))
-                screen.blit(pauseFade, ((screenX-gameX)/2,(screenY-gameY)/2))
-                pygame.display.update()
-                
+                pauseTime = time.time()
                 while True:
                     # Force Pygame to process the loop without needing to access events
                     pygame.event.pump()
-                    
+                    # Set Framerate
+                    clock.tick(60)
+
+                    # Refresh the game image
+                    screen.blit(gameBackground_image, ((screenX-gameX)/2, (screenY-gameY)/2+backgroundScroll))
+                    screen.blit(gameBackground_image, ((screenX-gameX)/2, (screenY-gameY)/2+backgroundScroll-backgroundY))
+                    spaceship.draw()
+                    j=0
+                    while j < len(missiles):
+                        missiles[j].draw()
+                        j += 1
+                    i = 0
+                    while i < len(enemies):
+                        enemies[i].draw()
+                        i += 1
+                    e=0
+                    while e < len(bombs):
+                        bombs[e].draw()
+                        e += 1
+                    n=0
+                    while n < len(explosions):
+                        explosions[n].draw()
+                        n += 1
+                    # Draws masking borders around the play area: pygame.draw.rect(Surface, (r, g, b, transparency), (left, top, boxSize, boxSize), outlineThickness)
+                    pygame.draw.rect(screen, (backgroundColour), ( 0, 0, (screenX-gameX)/2, screenY ), 0)
+                    pygame.draw.rect(screen, (backgroundColour), ( (screenX+gameX)/2, 0, (screenX-gameX)/2, screenY ), 0)
+                    pygame.draw.rect(screen, (backgroundColour), ( (screenX-gameX)/2, 0, gameX, (screenY-gameY)/2 ), 0)
+                    pygame.draw.rect(screen, (backgroundColour), ( (screenX-gameX)/2, (screenY+gameY)/2, gameX, (screenY-gameY)/2 ), 0)
+
+                    # Draws Health Bar and stats
+                    pygame.draw.rect (screen, (200,0,50), ( (screenX-gameX)/2+10, (screenY-gameY)/2+10, health/maxHealth*(armour*75+200), 50 ) )
+                    screen.blit (fontOne.render("Level: " + str(level), True, (200,0,50)), ( (screenX+gameX-fontOne.size("Timer: 00.0")[0]-fontOne.size("Level: 00")[0])/2, (screenY-gameY)/2+10 ) )
+                    screen.blit (fontOne.render("Timer: " + str(round(levelDelay-pauseTime + levelTimer,1)), True, (200,0,50)), ( (screenX+gameX)/2-fontOne.size("Timer: 00.0")[0], (screenY-gameY)/2+75 ) )
+                    screen.blit (fontOne.render("Score: " + str(score), True, (200,0,50)), ( (screenX-gameX)/2+10, (screenY-gameY)/2+75 ) )
+
+                    # Darkens the game while paused
+                    pauseFade = pygame.Surface((gameX,gameY), pygame.SRCALPHA, 32)
+                    pauseFade.fill((0, 0, 0, 150))
+                    screen.blit(pauseFade, ((screenX-gameX)/2,(screenY-gameY)/2))
+
+
                     pressedKeys = pygame.key.get_pressed()
 
                     if pressedKeys[K_w]:
-                        print ("W")
                         menuButton = 1  # Resume Game
                     if pressedKeys[K_a]:
-                        print("A")
-                        menuButton = 2  # Quit to menu
+                        menuButton = 2  # ????
                     if pressedKeys[K_s]:
-                        print("S")
-                        menuButton = 3  # ????
+                        menuButton = 3  # Quit to menu
                     if pressedKeys[K_d]:
-                        print("D")
                         menuButton = 4  # ????
 
-                    print (menuButton)
                     if pressedKeys[K_RETURN] and menuButton ==1:
+                        levelTimer += time.time()-pauseTime
                         break
-                    if pressedKeys[K_RETURN] and menuButton ==2:
+                    if pressedKeys[K_RETURN] and menuButton ==3:
                         health = 0
                         break
 
+                    #   Draws the Menu Buttons
+                    if menuButton == 1:
+                        screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+100)) # Resume Game Button
+                        screen.blit (fontTwo.render("Resume Game", True, (10,10,10)), ((screenX-fontTwo.size("Resume Game")[0])/2, (screenY-fontTwo.size("Resume Game")[1])/2+100-2))
+                    else:
+                        screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+100))
+                        screen.blit (fontTwo.render("Resume Game", True, (10,10,10)), ((screenX-fontTwo.size("Resume Game")[0])/2, (screenY-fontTwo.size("Resume Game")[1])/2+100-4))
+
+                    if menuButton == 2:
+                        screen.blit(Button2_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+225)) # Credits
+                        screen.blit (fontTwo.render("????", True, (10,10,10)), ((screenX-fontTwo.size("????")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("????")[1])/2+225-2))
+                    else:
+                        screen.blit(Button1_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+225))
+                        screen.blit (fontTwo.render("????", True, (10,10,10)), ((screenX-fontTwo.size("????")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("????")[1])/2+225-4))
+
+                    if menuButton == 3:
+                        screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+350)) # Quit Game
+                        screen.blit (fontTwo.render("Quit to Menu", True, (10,10,10)), ((screenX-fontTwo.size("Quit to Menu")[0])/2, (screenY-fontTwo.size("Quit to Menu")[1])/2+350-2))
+                    else:
+                        screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+350))
+                        screen.blit (fontTwo.render("Quit to Menu", True, (10,10,10)), ((screenX-fontTwo.size("Quit to Menu")[0])/2, (screenY-fontTwo.size("Quit to Menu")[1])/2+350-4))
+
+                    if menuButton == 4:
+                        screen.blit(Button2_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+225)) # Upgrades Button
+                        screen.blit (fontTwo.render("????", True, (10,10,10)), ((screenX-fontTwo.size("????")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("????")[1])/2+225-2))
+                    else:
+                        screen.blit(Button1_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+225))
+                        screen.blit (fontTwo.render("????", True, (10,10,10)), ((screenX-fontTwo.size("????")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("????")[1])/2+225-4))
+                    # Sets the Help Message on or off and draws to the screen if needed
+                    if pressedKeys[K_F1]:
+                        if toggle:
+                            helpMessage =not helpMessage
+                            toggle = False
+                    else:
+                        toggle = True
+
+                    if helpMessage == True:
+                        screen.blit (fontHelp.render("Press F1 to toggle instructions", True, (255,255,255)), (0,0) )
+                        screen.blit (fontHelp.render("W", True, (255,255,255)), (0,50) )
+                        screen.blit (fontHelp.render("Move Up", True, (255,255,255)), (200,50) )
+                        screen.blit (fontHelp.render("S", True, (255,255,255)), (0,80) )
+                        screen.blit (fontHelp.render("Move Down", True, (255,255,255)), (200,80) )
+                        screen.blit (fontHelp.render("A", True, (255,255,255)), (0,110) )
+                        screen.blit (fontHelp.render("Move Left", True, (255,255,255)), (200,110) )
+                        screen.blit (fontHelp.render("D", True, (255,255,255)), (0,140) )
+                        screen.blit (fontHelp.render("Move Right", True, (255,255,255)), (200,140) )
+                        screen.blit (fontHelp.render("Enter", True, (255,255,255)), (0,190) )
+                        screen.blit (fontHelp.render("Select", True, (255,255,255)), (200,190) )
+
+                    pygame.display.update()
 #-------------------------------------------------------------------------------------------------------------------------
 # Game Mode - Debug
 #-------------------------------------------------------------------------------------------------------------------------
@@ -623,7 +789,7 @@ while True:
 
         spaceship.x = (screenX-spaceshipX)/2
         spaceship.y = (screenY + gameY) /2 -(spaceshipY*1.5)
-        
+
         armour = 0
         engine = 0
         noseGun = 1
@@ -649,34 +815,219 @@ while True:
         pygame.mixer.music.load('music_track02.wav')
         pygame.mixer.music.play(-1)
         menu = False
+        menu2 = False
+        menuButton = 0
+        select = True
 
         while True:
             # Force Pygame to process the loop without needing to access events
             pygame.event.pump()
+            # Set Framerate
+            clock.tick(60)
+
+            # Start Rendering to screen
+            screen.fill(backgroundColour)
+            # Draws the game surface area: pygame.draw.rect(Surface, (r, g, b, transparency), (left, top, boxSize, boxSize), outlineThickness)
+            pygame.draw.rect(screen, (150,150,150), ( (screenX-gameX)/2, (screenY-gameY)/2, gameX, gameY ), 0)
+
+            screen.blit (fontOne.render("Score: " + str(totalScore), True, (200,0,50)), ( (screenX-gameX)/2+10, (screenY-gameY)/2+10 ) )
 
             pressedKeys = pygame.key.get_pressed()
-            if pressedKeys[K_ESCAPE]:
-                break
+
+            if pressedKeys[K_w] and not menu2:
+                menuButton = 1  # Weapons
+            if pressedKeys[K_a] and not menu2:
+                menuButton = 2  # Armour
+            if pressedKeys[K_s] and not menu2:
+                menuButton = 3  # Quit to menu
+            if pressedKeys[K_d] and not menu2:
+                menuButton = 4  # Thrusters
+
+            if pressedKeys[K_w] and menu2:
+                menuButton = 5  # Main Gun
+            if pressedKeys[K_a] and menu2:
+                menuButton = 6  # Left Gun
+            if pressedKeys[K_s] and menu2:
+                menuButton = 7  # Back
+            if pressedKeys[K_d] and menu2:
+                menuButton = 8  # Right Gun
+
+            if pressedKeys[K_RETURN]:
+                if menuButton == 1 and select:
+                    menu2 = True
+                    menuButton = 7
+                    select = False
+
+                if menuButton == 2 and select:
+                    if  armour < 3 and totalScore > armourCost [armour]:
+                        totalScore -= armourCost [armour]
+                        armour += 1
+                    select = False
+
+                if menuButton == 3 and select:
+                    break
+
+                if menuButton == 4 and select:
+                    if  engine < 3 and totalScore > engineCost [engine]:
+                        totalScore -= engineCost [engine]
+                        engine += 1
+                    select = False
+
+                if menuButton == 5 and select:
+                    if  noseGun < 3 and totalScore > nGunCost [noseGun]:
+                        totalScore -= nGunCost [noseGun]
+                        noseGun += 1
+                    select = False
+
+                if menuButton == 6 and select:
+                    if  lWingGun < 3 and totalScore > lGunCost [lWingGun]:
+                        totalScore -= lGunCost [lWingGun]
+                        lWingGun += 1
+                    select = False
+
+                if menuButton == 7 and select:
+                    menu2 = False
+                    menuButton = 1
+                    select = False
+
+                if menuButton == 8 and select:
+                    if  rWingGun < 3 and totalScore > rGunCost [rWingGun]:
+                        totalScore -= rGunCost [rWingGun]
+                        rWingGun += 1
+                    select = False
+
+            else:
+                select = True
+
+            #   Draws the Menu Buttons
+            if not menu2:
+                if menuButton == 1:
+                    screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+100)) # Weapons
+                    screen.blit (fontTwo.render("Weapons", True, (10,10,10)), ((screenX-fontTwo.size("Weapons")[0])/2, (screenY-fontTwo.size("Weapons")[1])/2+100-2))
+                else:
+                    screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+100))
+                    screen.blit (fontTwo.render("Weapons", True, (10,10,10)), ((screenX-fontTwo.size("Weapons")[0])/2, (screenY-fontTwo.size("Weapons")[1])/2+100-4))
+
+            if menuButton == 2:
+                screen.blit(Button2_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+225)) # Armour
+                screen.blit (fontTwo.render("Armour", True, (10,10,10)), ((screenX-fontTwo.size("Armour")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Armour")[1])/2+225-2))
+            else:
+                screen.blit(Button1_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+225))
+                screen.blit (fontTwo.render("Armour", True, (10,10,10)), ((screenX-fontTwo.size("Armour")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Armour")[1])/2+225-4))
+
+            if menuButton == 3:
+                screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+350)) # Menu
+                screen.blit (fontTwo.render("Quit to Menu", True, (10,10,10)), ((screenX-fontTwo.size("Quit to Menu")[0])/2, (screenY-fontTwo.size("Quit to Menu")[1])/2+350-2))
+            else:
+                screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+350))
+                screen.blit (fontTwo.render("Quit to Menu", True, (10,10,10)), ((screenX-fontTwo.size("Quit to Menu")[0])/2, (screenY-fontTwo.size("Quit to Menu")[1])/2+350-4))
+
+            if menuButton == 4:
+                screen.blit(Button2_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+225)) # Thrusters
+                screen.blit (fontTwo.render("Thrusters", True, (10,10,10)), ((screenX-fontTwo.size("Thrusters")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Thrusters")[1])/2+225-2))
+            else:
+                screen.blit(Button1_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+225))
+                screen.blit (fontTwo.render("Thrusters", True, (10,10,10)), ((screenX-fontTwo.size("Thrusters")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Thrusters")[1])/2+225-4))
+
+            if menu2:
+                if menuButton == 5:
+                    screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+0)) # Main Gun
+                    screen.blit (fontTwo.render("Main Gun", True, (10,10,10)), ((screenX-fontTwo.size("Main Gun")[0])/2, (screenY-fontTwo.size("Main Gun")[1])/2+0-2))
+                else:
+                    screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+0))
+                    screen.blit (fontTwo.render("Main Gun", True, (10,10,10)), ((screenX-fontTwo.size("Main Gun")[0])/2, (screenY-fontTwo.size("Main Gun")[1])/2+0-4))
+
+                if menuButton == 6:
+                    screen.blit(Button2_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+50)) # Left Wing
+                    screen.blit (fontTwo.render("Left Gun", True, (10,10,10)), ((screenX-fontTwo.size("Left Gun")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Left Gun")[1])/2+50-2))
+                else:
+                    screen.blit(Button1_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+50))
+                    screen.blit (fontTwo.render("Left Gun", True, (10,10,10)), ((screenX-fontTwo.size("Left Gun")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Left Gun")[1])/2+50-4))
+
+                if menuButton == 7:
+                    screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+100)) # Back
+                    screen.blit (fontTwo.render("Back", True, (10,10,10)), ((screenX-fontTwo.size("Back")[0])/2, (screenY-fontTwo.size("Back")[1])/2+100-2))
+                else:
+                    screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+100))
+                    screen.blit (fontTwo.render("Back", True, (10,10,10)), ((screenX-fontTwo.size("Back")[0])/2, (screenY-fontTwo.size("Back")[1])/2+100-4))
+
+                if menuButton == 8:
+                    screen.blit(Button2_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+50)) # Right Wing
+                    screen.blit (fontTwo.render("Right Gun", True, (10,10,10)), ((screenX-fontTwo.size("Right Gun")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Right Gun")[1])/2+50-2))
+                else:
+                    screen.blit(Button1_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+50))
+                    screen.blit (fontTwo.render("Right Gun", True, (10,10,10)), ((screenX-fontTwo.size("Right Gun")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Right Gun")[1])/2+50-4))
+
+            # Draws the Spaceship on the screen
+            if noseGun > 0:
+                ship = pygame.transform.rotozoom(noseGun_image[noseGun], -60,2.8)
+                shipX, shipY = ship.get_size()
+                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-100))
+                  
+            if rWingGun > 0:
+                ship = pygame.transform.rotozoom(rWingGun_image[rWingGun], -60,2.8)
+                shipX, shipY = ship.get_size()
+                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-100))
+                  
+            if lWingGun > 0:
+                ship = pygame.transform.rotozoom(lWingGun_image[lWingGun], -60,2.8)
+                shipX, shipY = ship.get_size()
+                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-100))
+                  
+            ship = pygame.transform.rotozoom(spaceship_image, -60,2.8)
+            shipX, shipY = ship.get_size()
+            screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-100))
+                  
+            if engine > 0:
+                ship = pygame.transform.rotozoom(engine_image[engine], -60,2.8)
+                shipX, shipY = ship.get_size()
+                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-100))
+                  
+            if armour > 0:
+                ship = pygame.transform.rotozoom(armour_image[armour], -60,2.8)
+                shipX, shipY = ship.get_size()
+                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-100))
+            
+            # Sets the Help Message on or off and draws to the screen if needed
+            if pressedKeys[K_F1]:
+                if toggle:
+                    helpMessage =not helpMessage
+                    toggle = False
+                else:
+                    toggle = True
+
+            if helpMessage == True:
+                screen.blit (fontHelp.render("Press F1 to toggle instructions", True, (255,255,255)), (0,0) )
+                screen.blit (fontHelp.render("W", True, (255,255,255)), (0,50) )
+                screen.blit (fontHelp.render("Move Up", True, (255,255,255)), (200,50) )
+                screen.blit (fontHelp.render("S", True, (255,255,255)), (0,80) )
+                screen.blit (fontHelp.render("Move Down", True, (255,255,255)), (200,80) )
+                screen.blit (fontHelp.render("A", True, (255,255,255)), (0,110) )
+                screen.blit (fontHelp.render("Move Left", True, (255,255,255)), (200,110) )
+                screen.blit (fontHelp.render("D", True, (255,255,255)), (0,140) )
+                screen.blit (fontHelp.render("Move Right", True, (255,255,255)), (200,140) )
+                screen.blit (fontHelp.render("Enter", True, (255,255,255)), (0,190) )
+                screen.blit (fontHelp.render("Select", True, (255,255,255)), (200,190) )
+
+            pygame.display.update()
 #-------------------------------------------------------------------------------------------------------------------------
 # Upgrade Mode - Debug
 #-------------------------------------------------------------------------------------------------------------------------
-            if pressedKeys[K_F1]:
-                lWingGun = 0
             if pressedKeys[K_F2]:
-                lWingGun = 1
+                noseGun = 1
             if pressedKeys[K_F3]:
-                lWingGun = 2
+                noseGun = 2
             if pressedKeys[K_F4]:
-                lWingGun = 3
+                noseGun = 3
 
             if pressedKeys[K_F5]:
-                noseGun = 0
+                lWingGun = 0
             if pressedKeys[K_F6]:
-                noseGun = 1
+                lWingGun = 1
             if pressedKeys[K_F7]:
-                noseGun = 2
+                lWingGun = 2
             if pressedKeys[K_F8]:
-                noseGun = 3
+                lWingGun = 3
 
             if pressedKeys[K_F9]:
                 rWingGun = 0
