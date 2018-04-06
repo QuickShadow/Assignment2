@@ -37,6 +37,40 @@ backgroundX, backgroundY = gameBackground_image.get_size()
 backgroundScroll = 0
 
 #-------------------------------------------------------------------------------------------------------------------------
+# Define Text for Credits
+#-------------------------------------------------------------------------------------------------------------------------
+credits = [
+"Game Design and Code","","By:  Adam Oliver","","","",
+"Music","","",
+"Main Menu BGM","","Expressions of the Mind","","By:  ShadyDave","","https://freesound.org/people/ShadyDave/sounds/325647/","","","",
+"Main Game BGM","Retro Game Overworld Loop #1","","By:  Sirkoto51","","https://freesound.org/people/Sirkoto51/sounds/393818/","","","",
+"Upgrades BGM","","Happy 8-bit Pixel Adventure","","By: edtijo","","https://freesound.org/people/edtijo/sounds/240376/","","","",
+"Font","","","2015 Cruiser Bold Italic","","By: Pixel Sagas","","https://www.dafont.com/2015-cruiser.font","","","",
+"Artwork","","",
+"Game Background""","Seamless Nebula Texture","","https://no.pinterest.com/pin/476114991835021557/","","","",
+"Drone Fighter","","made with: Space Ship Construction Kit","","By: Skorpio","","https://opengameart.org/content/space-ship-construction-kit","","","",
+"Alien Craft","","ships_void","","By:  Surt","","https://opengameart.org/content/shmup-ships","","","",
+"Explosions","","Hard Vacuum Graphics","","By: Daniel Cook","","http://www.lostgarden.com/2005/03/game-post-mortem-hard-vacuum.html","","","",
+"Alien Bombs","","4-colors-of-glowing-balls-2","","By:  RPG Maker MV and Entertainment","","https://ccrgeek.wordpress.com/rpg-maker-ace/graphics/character-sprites/",
+"","","","","","","","","","","Thankyou for playing"
+]
+
+#-------------------------------------------------------------------------------------------------------------------------
+# Define Text for End Game
+#-------------------------------------------------------------------------------------------------------------------------
+endGame = [
+"Congratulations!","","","",
+"You have bravely piloted your drone fighter","",
+"and broken through the alien blockade","","","",
+"Finally hitting the transmit button and","",
+"broadcasting the recorded call to arms","","","",
+"there is not much left to do now except","",
+"hold off the invading fleet until help arrives","","","",
+"keep up the good fight!","","","","","","","","","","",
+"Thankyou for playing"
+]
+
+#-------------------------------------------------------------------------------------------------------------------------
 # Define Images, Variables, and Class for Spaceship
 #-------------------------------------------------------------------------------------------------------------------------
 spaceship_image = pygame.image.load("Spaceship.png")
@@ -92,11 +126,11 @@ lWingGun = 0
 #   75k        approx for clearing L15
 # 170k        approx for clearing L20
 # 350k        approx for clearing L25
-armourCost =[100, 300, 500]
-engineCost =[100, 300, 500]
-nGunCost =[0, 300, 500]
-rGunCost =[30000, 300, 500]
-lGunCost =[30000, 300, 500]
+armourCost =[15000, 35000, 75000]
+engineCost =[20000, 45000, 90000]
+nGunCost =[0, 35000, 75000]
+rGunCost =[15000, 35000, 75000]
+lGunCost =[15000, 35000, 75000]
 
 class Spaceship:
     def __init__(self):
@@ -104,6 +138,8 @@ class Spaceship:
         self.y = (screenY + gameY) /2 -(spaceshipY*1.5)
 
     def draw(self):
+        #pygame.draw.rect(screen, (255,255,0),(self.x+(spaceshipX/4), self.y+(spaceshipY/4), spaceshipX/2, spaceshipY/2),0) #Collision Mask
+
         if noseGun > 0:
             screen.blit(noseGun_image[noseGun], (self.x, self.y))
         if rWingGun > 0:
@@ -137,9 +173,9 @@ class Spaceship:
         elif pressedKeys[K_a]:
             self.x = (screenX - gameX)/2
 
-    def hit_by(self, enemies):
-        return pygame.Rect(self.x, self.y, spaceshipX, spaceshipY).collidepoint(enemies.x+(enemy1X /2), enemies.y+(enemy1Y/2))
-
+    def collision(self, objectHit, obj_imageX, obj_imageY):
+        return pygame.Rect(self.x+(spaceshipX/4), self.y+(spaceshipY/4), spaceshipX/2, spaceshipY/2).collidepoint(objectHit.x+(obj_imageX /2), objectHit.y+(obj_imageY /2))
+    
     def fire(self):
             if noseGun == 1:
                 missiles.append(Missile(self.x + (spaceshipX / 2), self.y + 1))
@@ -194,19 +230,19 @@ class Missile:
 # Define Images List and Class for Explosions
 #-------------------------------------------------------------------------------------------------------------------------
 explosion = [
-    pygame.image.load("Explosion1.png"),
-    pygame.image.load("Explosion2.png"),
-    pygame.image.load("Explosion3.png"),
-    pygame.image.load("Explosion4.png"),
-    pygame.image.load("Explosion5.png"),
-    pygame.image.load("Explosion6.png"),
-    pygame.image.load("Explosion7.png"),
-    pygame.image.load("Explosion8.png"),
-    pygame.image.load("Explosion9.png"),
-    pygame.image.load("Explosion10.png"),
-    pygame.image.load("Explosion11.png"),
-    pygame.image.load("Explosion12.png")
-    ]
+pygame.image.load("Explosion1.png"),
+pygame.image.load("Explosion2.png"),
+pygame.image.load("Explosion3.png"),
+pygame.image.load("Explosion4.png"),
+pygame.image.load("Explosion5.png"),
+pygame.image.load("Explosion6.png"),
+pygame.image.load("Explosion7.png"),
+pygame.image.load("Explosion8.png"),
+pygame.image.load("Explosion9.png"),
+pygame.image.load("Explosion10.png"),
+pygame.image.load("Explosion11.png"),
+pygame.image.load("Explosion12.png")
+]
 
 explosions = []
 
@@ -226,32 +262,32 @@ class Explosion:
 #Define Images, Variables, List, and Class for Enemies
 #-------------------------------------------------------------------------------------------------------------------------
 enemy1 = [
-    pygame.image.load("AlienDrone1a.png"),
-    pygame.image.load("AlienDrone1b.png"),
-    pygame.image.load("AlienDrone1c.png"),
-    pygame.image.load("AlienDrone1d.png")
-    ]
+pygame.image.load("AlienDrone1a.png"),
+pygame.image.load("AlienDrone1b.png"),
+pygame.image.load("AlienDrone1c.png"),
+pygame.image.load("AlienDrone1d.png")
+]
 enemy1X, enemy1Y = enemy1[0].get_size()
 
 enemy2a = [
-    pygame.image.load("AlienDrone2a.png"),
-    pygame.image.load("AlienDrone2b.png"),
-    pygame.image.load("AlienDrone2c.png"),
-    pygame.image.load("AlienDrone2d.png")
-    ]
+pygame.image.load("AlienDrone2a.png"),
+pygame.image.load("AlienDrone2b.png"),
+pygame.image.load("AlienDrone2c.png"),
+pygame.image.load("AlienDrone2d.png")
+]
 enemy2b = [
-    pygame.image.load("AlienDrone2e.png"),
-    pygame.image.load("AlienDrone2f.png"),
-    pygame.image.load("AlienDrone2g.png"),
-    pygame.image.load("AlienDrone2h.png")
-    ]
+pygame.image.load("AlienDrone2e.png"),
+pygame.image.load("AlienDrone2f.png"),
+pygame.image.load("AlienDrone2g.png"),
+pygame.image.load("AlienDrone2h.png")
+]
 enemy2aX, enemy2aY = enemy2a[0].get_size()
 enemy2bX, enemy2bY = enemy2b[0].get_size()
 
 lastTimeEnemySpawned = 0
 spawnDelay = 2.0
 
-fireDelay = 4.0
+fireDelay = 3.0
 
 enemies = []
 
@@ -286,7 +322,7 @@ class Enemies:
 
         if self.type == 2 and self.mode == 0 and self.y> random.randint(200,600):
             self.mode = 1
-            self.fireTimer = time.time()
+            self.fireTimer = time.time()+(fireDelay/2)
 
     def bounce(self):
         # Change the direction of travel across the screen when an enemy hits the edge of the play area
@@ -349,8 +385,7 @@ class Bomb:
         self.animation =0
 
     def draw(self):
-        pygame.draw.line(screen, (0,255,0), (self.x,self.y), (self.x, self.y+5), 1)
-        screen.blit(bomb[self.animation], (self.x-(bombX /2), self.y-(bombY /2)))
+        screen.blit(bomb[self.animation], (self.x-(bombX /2), self.y))
 
     def move(self):
         self.y += 10
@@ -367,7 +402,8 @@ clock = pygame.time.Clock()
 score = 0
 totalScore = 0
 level = 1
-maxLevel = 30 # Target level to beat in order to clear the game
+curveAdjust = 5
+maxLevel = 25 # Target level to beat in order to clear the game
 levelTimer = 0
 levelDelay = 60 # Counts in seconds
 pauseTime = 0
@@ -376,7 +412,7 @@ menuButton = 0
 menu2 = False
 helpMessage = True
 toggle = True
-select = True
+select = False
 
 autopilot = False
 autodirection = 1
@@ -467,7 +503,7 @@ while True:
     pygame.display.update()
 
     # Exit game process
-    if pressedKeys[K_RETURN] and menuButton ==3:
+    if pressedKeys[K_RETURN] and menuButton ==3 and select:
         pygame.mixer.quit()
         pygame.display.quit()
         sys.exit()
@@ -476,7 +512,7 @@ while True:
 #/////////////////////////////////////////////////////////////////////////////////////////////////////
     # Game Mode - Start of loop
 #-------------------------------------------------------------------------------------------------------------------------
-    if pressedKeys[K_RETURN] and menuButton ==1:
+    if pressedKeys[K_RETURN] and menuButton ==1 and select:
         pygame.mixer.fadeout(300)
         pygame.mixer.music.load('music_track01.wav')
         pygame.mixer.music.play(-1)
@@ -487,6 +523,7 @@ while True:
 
         maxHealth = 75 * (1.6**(armour+1))
         health = maxHealth
+        screen.fill(backgroundColour)
         while health > 0:
             # Force Pygame to process the loop without needing to access events
             pygame.event.pump()
@@ -508,8 +545,8 @@ while True:
             screen.blit(gameBackground_image, ((screenX-gameX)/2, (screenY-gameY)/2+backgroundScroll-backgroundY))
 
             # Spawns new enemies if the timer has elapsed
-            if time.time() - lastTimeEnemySpawned > spawnDelay-(level/(maxLevel +10)*spawnDelay): # Spawn delay goes to 0 at 10 levels past game completion.
-                enemies.append(Enemies(level))
+            if time.time() - lastTimeEnemySpawned > spawnDelay-((level+curveAdjust)/(maxLevel +10)*spawnDelay): # Spawn delay goes to 0 at 5 levels past game completion.
+                enemies.append(Enemies(level+curveAdjust))
                 lastTimeEnemySpawned = time.time()
 
             # Calls the Spaceship Class to perform functions
@@ -543,11 +580,24 @@ while True:
                     del enemies[i]
                     i -= 1
                 # Check collisions between enemies and the player
-                elif spaceship.hit_by(enemies[i]):
-                    del enemies[i]
-                    i -= 1
-                    health -= level *5 +10
-                    # Sound effect for losing health
+                elif enemies[i].type==1:
+                    if spaceship.collision(enemies[i],enemy1X,enemy1Y,):
+                        del enemies[i]
+                        i -= 1
+                        health -= (level+curveAdjust) *5 +10
+                        # Sound effect for losing health
+                elif enemies[i].mode == 0:
+                    if spaceship.collision(enemies[i],enemy2aX,enemy2aY,):
+                        del enemies[i]
+                        i -= 1
+                        health -= (level+curveAdjust) *5 +10
+                        # Sound effect for losing health
+                else:
+                    if spaceship.collision(enemies[i],enemy2bX,enemy2bY,):
+                        del enemies[i]
+                        i -= 1
+                        health -= (level+curveAdjust) *5 +10
+                        # Sound effect for losing health
                 i += 1
 
             # Loop to move and draw all bombs
@@ -561,7 +611,7 @@ while True:
                     del bombs[e]
                     e -= 1
                 # Check collisions between bombs and player
-                elif spaceship.hit_by(bombs[e]):
+                elif spaceship.collision(bombs[e],bombX,bombY):
                     del bombs[e]
                     e-=1
                     health -= level *5 +10
@@ -631,7 +681,9 @@ while True:
                  screen.blit (fontHelp.render("D", True, (255,255,255)), (0,140) )
                  screen.blit (fontHelp.render("Move Right", True, (255,255,255)), (200,140) )
                  screen.blit (fontHelp.render("Enter", True, (255,255,255)), (0,190) )
-                 screen.blit (fontHelp.render("Select", True, (255,255,255)), (200,190) )
+                 screen.blit (fontHelp.render("Fire", True, (255,255,255)), (200,190) )
+                 screen.blit (fontHelp.render("Escape", True, (255,255,255)), (0,220) )
+                 screen.blit (fontHelp.render("Pause", True, (255,255,255)), (200,220) )
 
             pygame.display.update()
 
@@ -640,7 +692,34 @@ while True:
 #-------------------------------------------------------------------------------------------------------------------------
 
             if level > maxLevel:
-                pass
+                health = 0
+                select = False
+                backgroundScroll = 0
+                while True:
+                    pygame.event.pump()
+                    clock.tick(60)
+
+                    pressedKeys = pygame.key.get_pressed()
+                    if pressedKeys[K_RETURN]:
+                        if select:
+                            select = False
+                            break
+                    else:
+                        select =True
+                        
+                    backgroundScroll +=1
+                    if (backgroundScroll > backgroundY + (len(endGame)*30)):
+                        break
+
+                    screen.fill(backgroundColour)
+
+                    n = 0
+                    while n < len(endGame):
+                        screen.blit (fontHelp.render(endGame[n], True, (155,155,255)), ((screenX-fontHelp.size(endGame[n])[0])/2,(screenY+gameY)/2 +(n *30) - backgroundScroll) )
+                        n += 1
+
+                    pygame.display.update()
+                
 
 #-------------------------------------------------------------------------------------------------------------------------
 # Game Mode - Pause Menu
@@ -786,6 +865,7 @@ while True:
         score = 0
 
         menuButton = 0
+        select = False
 
         spaceship.x = (screenX-spaceshipX)/2
         spaceship.y = (screenY + gameY) /2 -(spaceshipY*1.5)
@@ -808,16 +888,53 @@ while True:
 
 #-------------------------------------------------------------------------------------------------------------------------
 #/////////////////////////////////////////////////////////////////////////////////////////////////////
+# Credits - Start of loop
+#-------------------------------------------------------------------------------------------------------------------------
+
+    if pressedKeys[K_RETURN] and menuButton ==2 and select:
+        select = False
+        backgroundScroll = 0
+        while True:
+            pygame.event.pump()
+            clock.tick(60)
+
+            pressedKeys = pygame.key.get_pressed()
+            if pressedKeys[K_RETURN] or pressedKeys[K_ESCAPE]:
+                if select:
+                    select = False
+                    break
+            else:
+                select =True
+                
+            backgroundScroll +=1
+            if (backgroundScroll > backgroundY + (len(credits)*30)):
+                break
+
+            screen.fill(backgroundColour)
+
+            n = 0
+            while n < len(credits):
+                screen.blit (fontHelp.render(credits[n], True, (155,155,255)), ((screenX-fontHelp.size(credits[n])[0])/2,(screenY+gameY)/2 +(n *30) - backgroundScroll) )
+                n += 1
+
+            pygame.display.update()
+#-------------------------------------------------------------------------------------------------------------------------
+# Credits - End of loop
+#/////////////////////////////////////////////////////////////////////////////////////////////////////
+#-------------------------------------------------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------------------------------------------------
+#/////////////////////////////////////////////////////////////////////////////////////////////////////
 # Upgrade Mode - Start of loop
 #-------------------------------------------------------------------------------------------------------------------------
-    if pressedKeys[K_RETURN] and menuButton ==4:
+    if pressedKeys[K_RETURN] and menuButton ==4 and select:
         pygame.mixer.fadeout(300)
         pygame.mixer.music.load('music_track02.wav')
         pygame.mixer.music.play(-1)
         menu = False
         menu2 = False
         menuButton = 0
-        select = True
+        select = False
 
         while True:
             # Force Pygame to process the loop without needing to access events
@@ -908,85 +1025,105 @@ while True:
                     screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+100))
                     screen.blit (fontTwo.render("Weapons", True, (10,10,10)), ((screenX-fontTwo.size("Weapons")[0])/2, (screenY-fontTwo.size("Weapons")[1])/2+100-4))
 
-            if menuButton == 2:
-                screen.blit(Button2_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+225)) # Armour
-                screen.blit (fontTwo.render("Armour", True, (10,10,10)), ((screenX-fontTwo.size("Armour")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Armour")[1])/2+225-2))
-            else:
-                screen.blit(Button1_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+225))
-                screen.blit (fontTwo.render("Armour", True, (10,10,10)), ((screenX-fontTwo.size("Armour")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Armour")[1])/2+225-4))
+                if menuButton == 2:
+                    screen.blit(Button2_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+225)) # Armour
+                    screen.blit (fontTwo.render("Armour", True, (10,10,10)), ((screenX-fontTwo.size("Armour")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Armour")[1])/2+225-2))
+                    if armour < 3:
+                        screen.blit (fontTwo.render("Upgrade Armour to Grade " + str(armour+1) + " costs " + str(armourCost[armour]) , True, (200,0,50)), ((screenX-fontTwo.size("Upgrade Armour to Grade 0 costs 00000")[0])/2, (screenY /2)+25))
+                    else:
+                        screen.blit (fontTwo.render("Armour upgraded to maximum", True, (200,0,50)), ((screenX-fontTwo.size("Armour upgraded to maximum")[0])/2, (screenY /2)+25))
+                else:
+                    screen.blit(Button1_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+225))
+                    screen.blit (fontTwo.render("Armour", True, (10,10,10)), ((screenX-fontTwo.size("Armour")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Armour")[1])/2+225-4))
 
-            if menuButton == 3:
-                screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+350)) # Menu
-                screen.blit (fontTwo.render("Quit to Menu", True, (10,10,10)), ((screenX-fontTwo.size("Quit to Menu")[0])/2, (screenY-fontTwo.size("Quit to Menu")[1])/2+350-2))
-            else:
-                screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+350))
-                screen.blit (fontTwo.render("Quit to Menu", True, (10,10,10)), ((screenX-fontTwo.size("Quit to Menu")[0])/2, (screenY-fontTwo.size("Quit to Menu")[1])/2+350-4))
+                if menuButton == 3:
+                    screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+350)) # Menu
+                    screen.blit (fontTwo.render("Quit to Menu", True, (10,10,10)), ((screenX-fontTwo.size("Quit to Menu")[0])/2, (screenY-fontTwo.size("Quit to Menu")[1])/2+350-2))
+                else:
+                    screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+350))
+                    screen.blit (fontTwo.render("Quit to Menu", True, (10,10,10)), ((screenX-fontTwo.size("Quit to Menu")[0])/2, (screenY-fontTwo.size("Quit to Menu")[1])/2+350-4))
 
-            if menuButton == 4:
-                screen.blit(Button2_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+225)) # Thrusters
-                screen.blit (fontTwo.render("Thrusters", True, (10,10,10)), ((screenX-fontTwo.size("Thrusters")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Thrusters")[1])/2+225-2))
-            else:
-                screen.blit(Button1_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+225))
-                screen.blit (fontTwo.render("Thrusters", True, (10,10,10)), ((screenX-fontTwo.size("Thrusters")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Thrusters")[1])/2+225-4))
+                if menuButton == 4:
+                    screen.blit(Button2_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+225)) # Thrusters
+                    screen.blit (fontTwo.render("Thrusters", True, (10,10,10)), ((screenX-fontTwo.size("Thrusters")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Thrusters")[1])/2+225-2))
+                    if engine < 3:
+                        screen.blit (fontTwo.render("Upgrade Thrusters to Grade " + str(engine+1) + " costs " + str(engineCost[engine]) , True, (200,0,50)), ((screenX-fontTwo.size("Upgrade Thrusters to Grade 0 costs 00000")[0])/2, (screenY /2)+25))
+                    else:
+                        screen.blit (fontTwo.render("Thrusters upgraded to maximum", True, (200,0,50)), ((screenX-fontTwo.size("Thrusters upgraded to maximum")[0])/2, (screenY /2)+25))
+                else:
+                    screen.blit(Button1_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+225))
+                    screen.blit (fontTwo.render("Thrusters", True, (10,10,10)), ((screenX-fontTwo.size("Thrusters")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Thrusters")[1])/2+225-4))
 
-            if menu2:
+            else:
                 if menuButton == 5:
-                    screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+0)) # Main Gun
-                    screen.blit (fontTwo.render("Main Gun", True, (10,10,10)), ((screenX-fontTwo.size("Main Gun")[0])/2, (screenY-fontTwo.size("Main Gun")[1])/2+0-2))
-                else:
-                    screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+0))
-                    screen.blit (fontTwo.render("Main Gun", True, (10,10,10)), ((screenX-fontTwo.size("Main Gun")[0])/2, (screenY-fontTwo.size("Main Gun")[1])/2+0-4))
-
-                if menuButton == 6:
-                    screen.blit(Button2_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+50)) # Left Wing
-                    screen.blit (fontTwo.render("Left Gun", True, (10,10,10)), ((screenX-fontTwo.size("Left Gun")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Left Gun")[1])/2+50-2))
-                else:
-                    screen.blit(Button1_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+50))
-                    screen.blit (fontTwo.render("Left Gun", True, (10,10,10)), ((screenX-fontTwo.size("Left Gun")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Left Gun")[1])/2+50-4))
-
-                if menuButton == 7:
-                    screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+100)) # Back
-                    screen.blit (fontTwo.render("Back", True, (10,10,10)), ((screenX-fontTwo.size("Back")[0])/2, (screenY-fontTwo.size("Back")[1])/2+100-2))
+                    screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+100)) # Main Gun
+                    screen.blit (fontTwo.render("Main Gun", True, (10,10,10)), ((screenX-fontTwo.size("Main Gun")[0])/2, (screenY-fontTwo.size("Main Gun")[1])/2+100-2))
+                    if noseGun < 3:
+                        screen.blit (fontTwo.render("Upgrade Main Gun to Grade " + str(noseGun+1) + " costs " + str(nGunCost[noseGun]) , True, (200,0,50)), ((screenX-fontTwo.size("Upgrade Main Gun to Grade 0 costs 00000")[0])/2, (screenY /2)+25))
+                    else:
+                        screen.blit (fontTwo.render("Main Gun upgraded to maximum", True, (200,0,50)), ((screenX-fontTwo.size("Main Gun upgraded to maximum")[0])/2, (screenY /2)+25))
                 else:
                     screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+100))
-                    screen.blit (fontTwo.render("Back", True, (10,10,10)), ((screenX-fontTwo.size("Back")[0])/2, (screenY-fontTwo.size("Back")[1])/2+100-4))
+                    screen.blit (fontTwo.render("Main Gun", True, (10,10,10)), ((screenX-fontTwo.size("Main Gun")[0])/2, (screenY-fontTwo.size("Main Gun")[1])/2+100-4))
+
+                if menuButton == 6:
+                    screen.blit(Button2_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+225)) # Left Wing
+                    screen.blit (fontTwo.render("Left Gun", True, (10,10,10)), ((screenX-fontTwo.size("Left Gun")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Left Gun")[1])/2+225-2))
+                    if lWingGun < 3:
+                        screen.blit (fontTwo.render("Upgrade Left Wing Gun to Grade " + str(lWingGun+1) + " costs " + str(lGunCost[lWingGun]) , True, (200,0,50)), ((screenX-fontTwo.size("Upgrade Left Wing Gun to Grade 0 costs 00000")[0])/2, (screenY /2)+25))
+                    else:
+                        screen.blit (fontTwo.render("Left Wing Gun upgraded to maximum", True, (200,0,50)), ((screenX-fontTwo.size("Left Wing Gun upgraded to maximum")[0])/2, (screenY /2)+25))
+                else:
+                    screen.blit(Button1_image, ((screenX-buttonX)/2-(buttonX*1.25), (screenY-buttonY)/2+225))
+                    screen.blit (fontTwo.render("Left Gun", True, (10,10,10)), ((screenX-fontTwo.size("Left Gun")[0])/2-(buttonX*1.25), (screenY-fontTwo.size("Left Gun")[1])/2+225-4))
+
+                if menuButton == 7:
+                    screen.blit(Button2_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+350)) # Back
+                    screen.blit (fontTwo.render("Back", True, (10,10,10)), ((screenX-fontTwo.size("Back")[0])/2, (screenY-fontTwo.size("Back")[1])/2+350-2))
+                else:
+                    screen.blit(Button1_image, ((screenX-buttonX)/2, (screenY-buttonY)/2+350))
+                    screen.blit (fontTwo.render("Back", True, (10,10,10)), ((screenX-fontTwo.size("Back")[0])/2, (screenY-fontTwo.size("Back")[1])/2+350-4))
 
                 if menuButton == 8:
-                    screen.blit(Button2_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+50)) # Right Wing
-                    screen.blit (fontTwo.render("Right Gun", True, (10,10,10)), ((screenX-fontTwo.size("Right Gun")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Right Gun")[1])/2+50-2))
+                    screen.blit(Button2_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+225)) # Right Wing
+                    screen.blit (fontTwo.render("Right Gun", True, (10,10,10)), ((screenX-fontTwo.size("Right Gun")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Right Gun")[1])/2+225-2))
+                    if rWingGun < 3:
+                        screen.blit (fontTwo.render("Upgrade Right Wing Gun to Grade " + str(rWingGun+1) + " costs " + str(rGunCost[rWingGun]) , True, (200,0,50)), ((screenX-fontTwo.size("Upgrade Right Wing Gun to Grade 0 costs 00000")[0])/2, (screenY /2)+25))
+                    else:
+                        screen.blit (fontTwo.render("Right Wing Gun upgraded to maximum", True, (200,0,50)), ((screenX-fontTwo.size("Right Wing Gun upgraded to maximum")[0])/2, (screenY /2)+25))
                 else:
-                    screen.blit(Button1_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+50))
-                    screen.blit (fontTwo.render("Right Gun", True, (10,10,10)), ((screenX-fontTwo.size("Right Gun")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Right Gun")[1])/2+50-4))
+                    screen.blit(Button1_image, ((screenX-buttonX)/2+(buttonX*1.25), (screenY-buttonY)/2+225))
+                    screen.blit (fontTwo.render("Right Gun", True, (10,10,10)), ((screenX-fontTwo.size("Right Gun")[0])/2+(buttonX*1.25), (screenY-fontTwo.size("Right Gun")[1])/2+225-4))
 
             # Draws the Spaceship on the screen
             if noseGun > 0:
                 ship = pygame.transform.rotozoom(noseGun_image[noseGun], -60,2.8)
                 shipX, shipY = ship.get_size()
-                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-100))
+                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-50))
                   
             if rWingGun > 0:
                 ship = pygame.transform.rotozoom(rWingGun_image[rWingGun], -60,2.8)
                 shipX, shipY = ship.get_size()
-                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-100))
+                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-50))
                   
             if lWingGun > 0:
                 ship = pygame.transform.rotozoom(lWingGun_image[lWingGun], -60,2.8)
                 shipX, shipY = ship.get_size()
-                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-100))
+                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-50))
                   
             ship = pygame.transform.rotozoom(spaceship_image, -60,2.8)
             shipX, shipY = ship.get_size()
-            screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-100))
+            screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-50))
                   
             if engine > 0:
                 ship = pygame.transform.rotozoom(engine_image[engine], -60,2.8)
                 shipX, shipY = ship.get_size()
-                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-100))
+                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-50))
                   
             if armour > 0:
                 ship = pygame.transform.rotozoom(armour_image[armour], -60,2.8)
                 shipX, shipY = ship.get_size()
-                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-100))
+                screen.blit(ship, ((screenX - shipX) /2, (screenY - gameY)/2-50))
             
             # Sets the Help Message on or off and draws to the screen if needed
             if pressedKeys[K_F1]:
@@ -1065,6 +1202,8 @@ while True:
 # Upgrade Mode - End of loop
 #/////////////////////////////////////////////////////////////////////////////////////////////////////
 #-------------------------------------------------------------------------------------------------------------------------
+    else:
+        select = True
 
 #-------------------------------------------------------------------------------------------------------------------------
 # Main Game Loop - End of loop
